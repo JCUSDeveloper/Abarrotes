@@ -4,7 +4,7 @@ services:
     runtime: node
     plan: free
     rootDir: backend
-    buildCommand: corepack enable && pnpm install --frozen-lockfile && pnpm deploy:build
+    buildCommand: pnpm install --frozen-lockfile && pnpm deploy:build
     startCommand: pnpm start:deploy
     healthCheckPath: /api/v1/health
     autoDeploy: true
