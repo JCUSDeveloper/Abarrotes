@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: abarrotes-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: abarrotes
+      POSTGRES_USER: abarrotes
+      POSTGRES_PASSWORD: abarrotes
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U abarrotes -d abarrotes"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
