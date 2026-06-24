@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { Icon } from "@/components/inventory/icon";
 import { ManagementSidebar } from "@/components/management/management-sidebar";
 import { apiFetch } from "@/lib/api-client";
@@ -72,6 +73,8 @@ export function UsersDashboard({ currentUserId }: { currentUserId: string }) {
   const [loading, setLoading] = useState(true);
   const [navOpen, setNavOpen] = useState(false);
   const [toast, setToast] = useState("");
+  const [userToDelete, setUserToDelete] = useState<ApiUser | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const notify = useCallback((message: string) => {
     setToast(message);
@@ -160,14 +163,22 @@ export function UsersDashboard({ currentUserId }: { currentUserId: string }) {
     }
   }
 
-  async function remove(user: ApiUser) {
-    if (!window.confirm(`¿Eliminar definitivamente a ${user.firstName} ${user.lastName}?`)) return;
+  function remove(user: ApiUser) {
+    setUserToDelete(user);
+  }
+
+  async function confirmRemove() {
+    if (!userToDelete) return;
+    setDeleting(true);
     try {
-      await apiFetch(`users/${user.id}`, { method: "DELETE" });
+      await apiFetch(`users/${userToDelete.id}`, { method: "DELETE" });
+      setUserToDelete(null);
       notify("Usuario eliminado");
       await load();
     } catch (error) {
       notify(errorMessage(error));
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -239,6 +250,16 @@ export function UsersDashboard({ currentUserId }: { currentUserId: string }) {
         <div className={styles.formGrid}><label><span>Privilegios</span><select value={draft.role} disabled={draft.id === currentUserId} onChange={(event) => setDraft({ ...draft, role: event.target.value as Role })}><option value="ADMIN">Administrador</option><option value="MANAGER">Gerente</option><option value="EMPLOYEE">Empleado</option></select><small>{roleDescriptions[draft.role]}</small></label><label><span>Estado</span><select value={draft.active ? "ACTIVE" : "INACTIVE"} disabled={draft.id === currentUserId} onChange={(event) => setDraft({ ...draft, active: event.target.value === "ACTIVE" })}><option value="ACTIVE">Activo</option><option value="INACTIVE">Inactivo</option></select><small>Los inactivos no pueden iniciar sesión.</small></label></div>
         <footer><button type="button" onClick={() => setModalOpen(false)}>Cancelar</button><button disabled={saving}><Icon name="check" />{saving ? "Guardando..." : "Guardar usuario"}</button></footer>
       </form></div>}
+      {userToDelete && (
+        <DeleteConfirmDialog
+          subject={`${userToDelete.firstName} ${userToDelete.lastName}`}
+          title="Eliminar usuario"
+          description={<>¿Seguro que deseas eliminar definitivamente a <strong>{userToDelete.firstName} {userToDelete.lastName}</strong>? Esta cuenta perderá el acceso al sistema.</>}
+          loading={deleting}
+          onCancel={() => setUserToDelete(null)}
+          onConfirm={confirmRemove}
+        />
+      )}
       {toast && <div className={styles.toast}><Icon name="check" />{toast}</div>}
     </div>
   );

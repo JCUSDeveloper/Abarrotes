@@ -28,7 +28,7 @@
 .storeIcon { width: 31px; height: 31px; display: grid; place-items: center; border-radius: 8px; background: rgba(37,211,176,.1); color: var(--teal); }
 .storeIcon svg { width: 19px; }
 .storeCard > span:nth-child(2) { display: grid; gap: 3px; }
-.storeCard strong { font-size: 11px; }
+.storeCard strong { color: var(--text); font-size: 11px; }
 .storeCard small { color: var(--muted); font-size: 10px; }
 .logoutForm { margin-top: 7px; }
 .logoutForm button { width: 100%; min-height: 35px; display: flex; align-items: center; justify-content: center; gap: 7px; border: 0; border-radius: 8px; background: transparent; color: #718297 !important; font-size: 10px; cursor: pointer; }
@@ -85,6 +85,13 @@
 .activeStatus { background: rgba(32,112,216,.18); color: #56aaff; }
 .moreButton { width: 24px; height: 24px; display: grid; place-items: center; border: 0; background: transparent; color: #9aaabb; cursor: pointer; }
 .moreButton svg { width: 15px; }
+.emptyActivity { min-height: 235px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; margin: 10px 16px 16px; border: 1px dashed rgba(151,180,207,.18); border-radius: 12px; background: radial-gradient(circle at 50% 0%, rgba(37,211,176,.08), transparent 42%), rgba(8,21,34,.34); color: #9cabbc; text-align: center; }
+.emptyActivity > span { width: 46px; height: 46px; display: grid; place-items: center; border: 1px solid rgba(37,211,176,.22); border-radius: 13px; background: rgba(37,211,176,.09); color: var(--teal); }
+.emptyActivity svg { width: 21px; }
+.emptyActivity strong { color: #f5f8fc; font-size: 14px; }
+.emptyActivity p { max-width: 330px; color: #8ea0b2; font-size: 10px; line-height: 1.5; }
+.emptyActivity button { height: 34px; display: flex; align-items: center; gap: 7px; margin-top: 4px; padding: 0 13px; border: 1px solid rgba(37,211,176,.34); border-radius: 8px; background: rgba(37,211,176,.08); color: var(--teal); font-size: 10px; font-weight: 680; cursor: pointer; }
+.emptyActivity button:hover { background: rgba(37,211,176,.13); box-shadow: 0 0 18px rgba(37,211,176,.08); }
 .srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
 
 .quickPanel { padding: 14px; }

@@ -6,3 +6,8 @@
 .iconSelect:hover>i{border-color:rgba(37,211,176,.42);box-shadow:0 0 18px rgba(37,211,176,.06)}
 .rule>button:hover{background:rgba(37,211,176,.055);box-shadow:inset 0 0 0 1px rgba(37,211,176,.12)}
 .tablePanel>footer button:hover{border-color:rgba(37,211,176,.42);box-shadow:0 0 16px rgba(37,211,176,.06)}
+
+.editor form>footer button:hover:not(:disabled){border-color:rgba(37,211,176,.42);background-color:#0c2030;box-shadow:0 0 18px rgba(37,211,176,.08)}
+.editor form>footer button:last-child:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 14px 32px rgba(24,186,153,.16)}
+.editor form>footer button:disabled{opacity:.55}
+.primary:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 14px 32px rgba(24,186,153,.16)}

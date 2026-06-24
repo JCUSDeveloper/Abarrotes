@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { Icon, type IconName } from "@/components/inventory/icon";
 import { ManagementSidebar } from "@/components/management/management-sidebar";
 import type { PaginatedResponse } from "@/components/products/products-data";
@@ -111,6 +112,8 @@ export function SuppliersDashboard() {
   const [modal, setModal] = useState(false);
   const [draft, setDraft] = useState<SupplierDraft>(blankDraft);
   const [saving, setSaving] = useState(false);
+  const [supplierToDelete, setSupplierToDelete] = useState<Supplier | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const choose = useCallback(async (supplier: Supplier) => {
     setSelected(supplier);
@@ -213,15 +216,23 @@ export function SuppliersDashboard() {
     }
   }
 
-  async function remove(supplier: Supplier) {
-    if (!window.confirm(`¿Eliminar ${supplier.name}?`)) return;
+  function remove(supplier: Supplier) {
+    setSupplierToDelete(supplier);
+  }
+
+  async function confirmRemove() {
+    if (!supplierToDelete) return;
+    setDeleting(true);
     try {
-      await apiFetch(`suppliers/${supplier.id}`, { method: "DELETE" });
+      await apiFetch(`suppliers/${supplierToDelete.id}`, { method: "DELETE" });
       setSelected(null);
       await loadSuppliers();
+      setSupplierToDelete(null);
       setToast("Proveedor eliminado");
     } catch (error) {
       setToast(message(error));
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -239,6 +250,16 @@ export function SuppliersDashboard() {
         {selected && <section className={styles.detail}><nav><button className={styles.activeTab}><Icon name="users" />Detalle del proveedor</button><button><Icon name="package" />Productos asociados</button><button><Icon name="clock" />Historial de precios</button></nav><div className={styles.detailBody}><header><i style={{ background: selected.color }}>{selected.logo}</i><h2>{selected.name}</h2><span>{selected.status}</span><div><button onClick={() => openEdit(selected)}><Icon name="edit" />Editar</button><button onClick={() => setToast("La vinculación se realiza al editar productos")}><Icon name="link" />Vincular productos</button><button onClick={() => setToast("Solicitud preparada")}><Icon name="send" />Solicitar actualización</button></div></header><div className={styles.detailGrid}><section><h3>Contacto principal</h3><b>{selected.contact}</b><small>{selected.role}</small><p>Correo <span>{selected.email}</span></p><p>Teléfono <span>{selected.phone}</span></p><p>Última actividad <span>{selected.last}</span></p></section><section><h3>Marcas asociadas</h3><div className={styles.chips}>{selected.linkedProducts.length ? [...new Set(selected.linkedProducts.map((product) => product.brand))].map((brand) => <b key={brand}>{brand}</b>) : <span>Sin productos vinculados</span>}</div><h3>Productos</h3><div className={styles.chips}>{selected.linkedProducts.slice(0, 4).map((product) => <span key={product.name}>{product.name}</span>)}</div></section><section><h3>Condiciones comerciales</h3><p>Plazo de crédito <b>{selected.terms}</b></p><p>Tipo de pago <b>{selected.paymentMethod}</b></p><p>Productos asociados <b>{selected.products}</b></p></section><section><h3>Actividad</h3><p>Información actualizada <b>{selected.last}</b></p><p>Estado comercial <b>{selected.status}</b></p></section></div></div></section>}
       </main>
       {modal && <div className={styles.backdrop}><form className={styles.modal} onSubmit={(event) => void save(event)}><header><h2>{draft.id ? "Editar proveedor" : "Nuevo proveedor"}</h2><button type="button" onClick={() => setModal(false)}><Icon name="close" /></button></header><label><span>Nombre</span><input value={draft.name} onChange={(event) => setDraft({ ...draft, name: event.target.value })} required /></label><label><span>Contacto</span><input value={draft.contactName} onChange={(event) => setDraft({ ...draft, contactName: event.target.value })} required /></label><label><span>Cargo</span><input value={draft.contactRole} onChange={(event) => setDraft({ ...draft, contactRole: event.target.value })} /></label><label><span>Correo</span><input type="email" value={draft.email} onChange={(event) => setDraft({ ...draft, email: event.target.value })} /></label><label><span>Teléfono</span><input value={draft.phone} onChange={(event) => setDraft({ ...draft, phone: event.target.value })} /></label><label><span>Días de crédito</span><input type="number" min="0" value={draft.creditDays} onChange={(event) => setDraft({ ...draft, creditDays: Number(event.target.value) })} /></label><label><span>Forma de pago</span><input value={draft.paymentMethod} onChange={(event) => setDraft({ ...draft, paymentMethod: event.target.value })} /></label><label><span>Estado</span><select value={draft.status} onChange={(event) => setDraft({ ...draft, status: event.target.value as ApiStatus })}><option value="ACTIVE">Activo</option><option value="PENDING">Pendiente</option><option value="INACTIVE">Inactivo</option></select></label><footer><button type="button" onClick={() => setModal(false)}>Cancelar</button><button disabled={saving}><Icon name="check" />{saving ? "Guardando..." : "Guardar"}</button></footer></form></div>}
+      {supplierToDelete && (
+        <DeleteConfirmDialog
+          subject={supplierToDelete.name}
+          title="Eliminar proveedor"
+          description={<>¿Seguro que deseas eliminar <strong>{supplierToDelete.name}</strong>? Se quitará del catálogo comercial y de las relaciones configuradas.</>}
+          loading={deleting}
+          onCancel={() => setSupplierToDelete(null)}
+          onConfirm={confirmRemove}
+        />
+      )}
       {toast && <div className={styles.toast} role="status"><Icon name="check" />{toast}</div>}
     </div>
   );

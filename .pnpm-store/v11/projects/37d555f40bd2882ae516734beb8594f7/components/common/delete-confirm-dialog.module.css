@@ -1,0 +1,155 @@
+.backdrop {
+  position: fixed;
+  z-index: 160;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(2, 8, 14, 0.76);
+  backdrop-filter: blur(6px);
+  animation: fadeIn 150ms ease;
+}
+
+.dialog {
+  width: min(460px, 100%);
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid rgba(255, 86, 95, 0.24);
+  border-radius: 14px;
+  background: linear-gradient(150deg, #112235, #0a1928);
+  color: #f5f8fc;
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.48),
+    0 0 42px rgba(255, 86, 95, 0.06);
+  animation: confirmIn 160ms ease;
+}
+
+.icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 86, 95, 0.25);
+  border-radius: 13px;
+  background: rgba(180, 42, 54, 0.14);
+  color: #ff6870;
+}
+
+.icon svg {
+  width: 24px;
+}
+
+.copy {
+  min-width: 0;
+  display: grid;
+  gap: 7px;
+}
+
+.copy p {
+  color: #ff858b;
+  font-size: 9px;
+  font-weight: 760;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.copy h2 {
+  font-size: 20px;
+  letter-spacing: -0.025em;
+}
+
+.copy span {
+  color: #aebdca;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.copy strong {
+  color: #f4f8fc;
+  font-weight: 740;
+}
+
+.dialog footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  margin-top: 5px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(151, 180, 207, 0.14);
+}
+
+.dialog footer button {
+  min-width: 116px;
+  height: 39px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid rgba(151, 180, 207, 0.24);
+  border-radius: 8px;
+  background: rgba(8, 21, 34, 0.45);
+  color: #c7d1dc;
+  font: inherit;
+  font-size: 10px;
+  font-weight: 680;
+  cursor: pointer;
+}
+
+.dialog footer button:hover:not(:disabled) {
+  border-color: rgba(37, 211, 176, 0.38);
+  background: rgba(8, 27, 42, 0.72);
+  box-shadow: 0 0 18px rgba(37, 211, 176, 0.07);
+}
+
+.dialog footer button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.dialog footer .dangerButton {
+  border-color: rgba(255, 86, 95, 0.36);
+  background: linear-gradient(135deg, #ff6269, #d9414c);
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(217, 65, 76, 0.14);
+}
+
+.dialog footer .dangerButton:hover:not(:disabled) {
+  border-color: rgba(255, 134, 140, 0.62);
+  background: linear-gradient(135deg, #ff767d, #e24652);
+  box-shadow: 0 0 22px rgba(255, 86, 95, 0.14);
+}
+
+.dialog footer svg {
+  width: 15px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+}
+
+@keyframes confirmIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.985);
+  }
+}
+
+@media (max-width: 440px) {
+  .backdrop {
+    padding: 10px;
+  }
+
+  .dialog {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .backdrop,
+  .dialog {
+    animation-duration: 0.01ms !important;
+  }
+}

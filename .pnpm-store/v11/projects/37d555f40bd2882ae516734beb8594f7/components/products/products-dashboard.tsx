@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { logout } from "@/app/actions/auth";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { Icon, type IconName } from "@/components/inventory/icon";
 import { ApiError, apiFetch } from "@/lib/api-client";
 import {
@@ -400,30 +401,14 @@ export function ProductsDashboard() {
       )}
 
       {productToDelete && (
-        <div
-          className={styles.modalBackdrop}
-          role="presentation"
-          onMouseDown={(event) => {
-            if (!deleting && event.target === event.currentTarget) setProductToDelete(null);
-          }}
-        >
-          <section className={styles.confirmModal} role="alertdialog" aria-modal="true" aria-labelledby="delete-product-title" aria-describedby="delete-product-description">
-            <div className={styles.confirmIcon}><Icon name="warning" /></div>
-            <div className={styles.confirmCopy}>
-              <p>Acción irreversible</p>
-              <h2 id="delete-product-title">Eliminar producto</h2>
-              <span id="delete-product-description">
-                ¿Seguro que deseas eliminar <strong>{productToDelete.name}</strong> del catálogo? Esta acción lo retirará de productos, inventario y reportes relacionados.
-              </span>
-            </div>
-            <footer>
-              <button type="button" onClick={() => setProductToDelete(null)} disabled={deleting}>Cancelar</button>
-              <button type="button" className={styles.dangerButton} onClick={() => void confirmDeleteProduct()} disabled={deleting}>
-                <Icon name="trash" /> {deleting ? "Eliminando..." : "Sí, eliminar"}
-              </button>
-            </footer>
-          </section>
-        </div>
+        <DeleteConfirmDialog
+          subject={productToDelete.name}
+          title="Eliminar producto"
+          description={<>¿Seguro que deseas eliminar <strong>{productToDelete.name}</strong> del catálogo? Esta acción lo retirará de productos, inventario y reportes relacionados.</>}
+          loading={deleting}
+          onCancel={() => setProductToDelete(null)}
+          onConfirm={confirmDeleteProduct}
+        />
       )}
 
       {toast && <div className={styles.toast} role="status"><Icon name="check" />{toast}</div>}

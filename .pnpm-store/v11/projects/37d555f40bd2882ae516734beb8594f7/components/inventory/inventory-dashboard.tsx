@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { logout } from "@/app/actions/auth";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { apiFetch } from "@/lib/api-client";
 import {
   type ApiInventory,
@@ -107,6 +108,8 @@ export function InventoryDashboard() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<OperationalProduct | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const loadInventory = useCallback(async () => {
     const [inventoryResponse, summaryResponse] = await Promise.all([
@@ -231,14 +234,22 @@ export function InventoryDashboard() {
     }
   }
 
-  async function deleteProduct(product: OperationalProduct) {
-    if (!window.confirm(`¿Eliminar ${product.name} del inventario?`)) return;
+  function deleteProduct(product: OperationalProduct) {
+    setProductToDelete(product);
+  }
+
+  async function confirmDeleteProduct() {
+    if (!productToDelete) return;
+    setDeleting(true);
     try {
-      await apiFetch(`products/${product.id}`, { method: "DELETE" });
+      await apiFetch(`products/${productToDelete.id}`, { method: "DELETE" });
       await loadInventory();
+      setProductToDelete(null);
       setToast("Producto eliminado del inventario");
     } catch (error) {
       setToast(message(error));
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -378,6 +389,16 @@ export function InventoryDashboard() {
       </main>
 
       {previewOpen && <div className={styles.previewBackdrop} role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) setPreviewOpen(false); }}><section className={styles.previewModal} role="dialog" aria-modal="true" aria-labelledby="preview-title"><header><div><p>Actualización masiva</p><h2 id="preview-title">Vista previa de cambios</h2></div><button aria-label="Cerrar vista previa" onClick={() => setPreviewOpen(false)}><Icon name="close" /></button></header><div className={styles.previewList}>{selectedProducts.map((product) => <div key={product.id}><span style={{ background: product.iconTone }}>{product.icon}</span><strong>{product.name}<small>{product.sku}</small></strong><p>{currency(product.currentPrice)} <Icon name="arrow-right" /> <b>{currency(calculateAdjustedPrice(product.currentPrice))}</b></p></div>)}</div><footer><button onClick={() => setPreviewOpen(false)}>Cancelar</button><button onClick={() => void applyBatchChanges()} disabled={saving}><Icon name="check" /> Confirmar cambios</button></footer></section></div>}
+      {productToDelete && (
+        <DeleteConfirmDialog
+          subject={productToDelete.name}
+          title="Eliminar producto"
+          description={<>¿Seguro que deseas eliminar <strong>{productToDelete.name}</strong> del inventario? También se retirará del catálogo operativo.</>}
+          loading={deleting}
+          onCancel={() => setProductToDelete(null)}
+          onConfirm={confirmDeleteProduct}
+        />
+      )}
       {toast && <div className={styles.toast} role="status"><Icon name="check" />{toast}</div>}
     </div>
   );

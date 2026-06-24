@@ -26,6 +26,7 @@
 @media(max-width:440px){.pageHeader span{max-width:190px}.batchForm{grid-template-columns:1fr}.reasonField,.batchActions{grid-column:auto}.batchActions{grid-template-columns:1fr}.batchActions small{grid-column:auto}.selectedList>div{grid-template-columns:17px 25px minmax(100px,1fr) 18px}.selectedList b{display:none}}
 @media(prefers-reduced-motion:reduce){.appShell *,.appShell *::before,.appShell *::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 
+.storeCard strong{color:var(--text)!important}
 .metricCard .negativeTrend{color:#ff777d}
 .inventoryTable th>svg{display:inline-block;width:12px;margin-left:4px;vertical-align:-2px}
 .tableFooter button:disabled{opacity:.35;cursor:not-allowed}

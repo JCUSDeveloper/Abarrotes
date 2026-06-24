@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { DeleteConfirmDialog } from "@/components/common/delete-confirm-dialog";
 import { Icon, type IconName } from "@/components/inventory/icon";
 import { ManagementSidebar } from "@/components/management/management-sidebar";
 import { apiFetch } from "@/lib/api-client";
@@ -102,6 +103,8 @@ export function CategoriesDashboard() {
   const [toast, setToast] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [categoryToDelete, setCategoryToDelete] = useState<Category | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const loadCategories = useCallback(async () => {
     const response = await apiFetch<PaginatedResponse<ApiCategory>>("categories?limit=100");
@@ -179,14 +182,23 @@ export function CategoriesDashboard() {
     }
   }
 
-  async function remove(category: Category) {
-    if (!category.id || !window.confirm(`¿Eliminar ${category.name}?`)) return;
+  function remove(category: Category) {
+    if (!category.id) return;
+    setCategoryToDelete(category);
+  }
+
+  async function confirmRemove() {
+    if (!categoryToDelete?.id) return;
+    setDeleting(true);
     try {
-      await apiFetch(`categories/${category.id}`, { method: "DELETE" });
+      await apiFetch(`categories/${categoryToDelete.id}`, { method: "DELETE" });
       await loadCategories();
+      setCategoryToDelete(null);
       setToast("Categoría eliminada");
     } catch (error) {
       setToast(message(error));
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -207,6 +219,16 @@ export function CategoriesDashboard() {
           </aside>
         </div>
       </main>
+      {categoryToDelete && (
+        <DeleteConfirmDialog
+          subject={categoryToDelete.name}
+          title="Eliminar categoría"
+          description={<>¿Seguro que deseas eliminar <strong>{categoryToDelete.name}</strong>? Los productos asociados quedarán sin esta categoría.</>}
+          loading={deleting}
+          onCancel={() => setCategoryToDelete(null)}
+          onConfirm={confirmRemove}
+        />
+      )}
       {toast && <div className={styles.toast} role="status"><Icon name="check" />{toast}</div>}
     </div>
   );

@@ -11,9 +11,9 @@ const initialState: LoginState = {
 };
 
 const benefits = [
-  "Inventario actualizado en tiempo real",
-  "Alertas antes de quedarte sin stock",
-  "Movimientos y reportes en un solo lugar",
+  "Catálogo operativo siempre actualizado",
+  "Cambios de precio y revisiones controladas",
+  "Productos, categorías y proveedores en un solo lugar",
 ];
 
 export function LoginScreen() {
@@ -22,7 +22,7 @@ export function LoginScreen() {
 
   return (
     <main className={styles.loginPage}>
-      <section className={styles.brandPanel} aria-label="Abarrotes Inventario">
+      <section className={styles.brandPanel} aria-label="Abarrotes catálogo operativo">
         <div className={styles.glowOne} />
         <div className={styles.glowTwo} />
 
@@ -32,11 +32,11 @@ export function LoginScreen() {
         </div>
 
         <div className={styles.heroCopy}>
-          <p className={styles.eyebrow}>Inventario inteligente</p>
-          <h1>Tu tienda bajo control, todos los días.</h1>
+          <p className={styles.eyebrow}>Operación de tienda</p>
+          <h1>Tu catálogo bajo control, todos los días.</h1>
           <p>
-            Detecta faltantes, registra movimientos y toma decisiones con una
-            vista clara de todo tu negocio.
+            Administra productos, precios, categorías y proveedores con una
+            vista clara de la operación diaria.
           </p>
 
           <ul>
@@ -52,33 +52,33 @@ export function LoginScreen() {
         <div className={styles.previewCard} aria-hidden="true">
           <div className={styles.previewHeader}>
             <div>
-              <span>Resumen del día</span>
-              <strong>Inventario saludable</strong>
+              <span>Resumen del catálogo</span>
+              <strong>Operación al día</strong>
             </div>
             <span className={styles.liveBadge}><i /> En vivo</span>
           </div>
           <div className={styles.previewStats}>
             <div>
               <span className={styles.previewIcon}><Icon name="package" /></span>
-              <p>Productos</p>
-              <strong>1,248</strong>
-              <small>+8.4% este mes</small>
+              <p>Productos activos</p>
+              <strong>214</strong>
+              <small>+8.2% este mes</small>
             </div>
             <div>
               <span className={`${styles.previewIcon} ${styles.warningIcon}`}><Icon name="warning" /></span>
-              <p>Stock bajo</p>
-              <strong>23</strong>
-              <small>Requieren atención</small>
+              <p>Pendientes</p>
+              <strong>14</strong>
+              <small>Requieren revisión</small>
             </div>
             <div>
               <span className={`${styles.previewIcon} ${styles.moneyIcon}`}><Icon name="dollar" /></span>
-              <p>Valor total</p>
-              <strong>$245k</strong>
-              <small>+12.6% este mes</small>
+              <p>Cambios de precio</p>
+              <strong>32</strong>
+              <small>+33.3% este mes</small>
             </div>
           </div>
           <div className={styles.previewChart}>
-            <div className={styles.chartLabels}><span>Movimientos</span><strong>Últimos 7 días</strong></div>
+            <div className={styles.chartLabels}><span>Actividad</span><strong>Últimos 7 días</strong></div>
             <div className={styles.bars}>
               {[44, 62, 51, 75, 58, 86, 70].map((height, index) => (
                 <span key={height} style={{ height: `${height}%` }} className={index === 5 ? styles.activeBar : ""} />
@@ -100,7 +100,7 @@ export function LoginScreen() {
           <div className={styles.formIcon}><Icon name="shield" /></div>
           <p className={styles.formEyebrow}>Portal administrativo</p>
           <h2>Bienvenido de nuevo</h2>
-          <p className={styles.formSubtitle}>Ingresa tus datos para acceder al inventario.</p>
+          <p className={styles.formSubtitle}>Ingresa tus datos para administrar el catálogo.</p>
 
           <form action={formAction} noValidate>
             {state.error && (
@@ -169,15 +169,6 @@ export function LoginScreen() {
               {isPending ? "Verificando..." : "Iniciar sesión"}
             </button>
           </form>
-
-          <div className={styles.demoAccess}>
-            <span><Icon name="shield" /></span>
-            <div>
-              <strong>Acceso de demostración</strong>
-              <p><b>Correo:</b> admin@abarrotes.mx</p>
-              <p><b>Contraseña:</b> admin123</p>
-            </div>
-          </div>
 
           <p className={styles.supportText}>
             ¿Problemas para ingresar? <span>Contacta al administrador de tu tienda.</span>
